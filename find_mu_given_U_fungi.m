@@ -78,7 +78,7 @@ end
  x_max = min([-1+(kappa^2)*Ce/(CC*(1+beta)), ...
               -1+(kappa^2)*Ne/(Ni*(1+beta))]);
              
-if (isreal(mu) ~= 1) || (mu < 0) || (isnan(mu) == 1) || (x > x_max)
+if ~isreal(mu) || (mu < 0) || isnan(mu) || (x > x_max)
     
     mu = 0;
     xC = 0;

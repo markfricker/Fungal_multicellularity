@@ -1,11 +1,11 @@
 % res1 is the number of different values for the C:N ratio and 
 % recalcitrance that are tried
-res1 = 20;
+res1 = 200;
 
 % xres determines the number of different values for x that are tried in
 % finding the optimal solution. Final value found is accurate to
 % xres^2
-xres = 20;
+xres = 200;
 
 % res is the number of iterations used in finding best solution for 
 % a given environment and a given rate of sythesis
