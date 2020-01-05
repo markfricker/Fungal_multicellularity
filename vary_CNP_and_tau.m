@@ -1,55 +1,69 @@
-% res1 is the number of different values for the C:N ratio and 
-% recalcitrance that are tried
+%% set up parameters. These can be manually edited.
+% res1 is the number of different values for the C:N ratio and recalcitrance
+% that are tried
 res1 = 200;
 
-% xres determines the number of different values for x that are tried in
-% finding the optimal solution. Final value found is accurate to
-% xres^2
+% xres determines the number of different values for x that are tried in finding
+% the optimal solution. Final value found is accurate to xres^2.
 xres = 200;
 
-% res is the number of iterations used in finding best solution for 
-% a given environment and a given rate of sythesis
+% res is the number of iterations used in finding best solution for a given
+% environment and a given rate of sythesis.
 sres = 60;
 
+% N_to_P set the N:P ratio of the resource.
 N_to_P = 20;
-    
+
+% kappa is the radius of digestion, normalised to the radous of the cells/hypha,
+% and sets the total amount of resource available.
 kappa = 6;
-    
+
+% C_to_N_min and C_to_N_max define the limits of the C:N ratio in the resource.
+% The number of intermediate steps is controlled by res1. The C:N ratio is
+% plotted on the y-axis of the resultnt map.
 C_to_N_min = 8;
 C_to_N_max = 300;
- 
+
+% tau_min and tau_max define the limits of the resouce recalcitrance, where tau
+% is the time in hours for hydrolases to digest their own mass . the number of
+% intermediate steps is controlled by res1. The recalcitrance is plotted on the
+% x-axis of the resultnt map.
 tau_min = 0.1;
 tau_max = 100;
 
-% Ci is the mass of carbon needed per unit volume of growth, in g per ml
+% Ci, Ni and Pi are the mass of carbon, nitrogen and phosphorous, respectively,
+% needed per unit volume of growth, in g per ml.
 Ci = 0.33;
 Ni = 0.032;
 Pi = 0.005;
 
-% dry weight in grams per ml of the substrate
+% dry weight in grams per ml of the substrate.
 density = 0.5;
 
-% epsilon is the efficiency of recycling for senscent cells
+% epsilon is the efficiency of recycling for senscent autolytic cells.
 epsilon = 0.5;
 
-% alpha is the mass of machinery needed for cell mobility, relative
-% to the mass of essential machinery
+% alpha is the additional mass of machinery needed for cell mobility, relative
+% to the mass of essential metabolic machinery.
 alpha = 0.02;
 
-% beta is the mass of material in vesicles, relative to the mass of
-% the rest of the fungus, including hydrolases
+% beta is the mass of material in vesicles, relative to the mass of the rest of
+% the fungus, including hydrolases.
 beta = 0.1;
 
-% lambda is the maximum rate of resource use per unit volume,
-% in g per ml per hour
+% lambda is the maximum rate of resource use per unit volume, in g per ml per
+% hour.
 lambda = 0.3;
 
-% L is the maximum rate of resource use per unit volume,
-% relative to Ci + Ni + Pi
+% delta is the ratio of C that has to be digested to release each N, to reflect
+% that N is embedded within C-rich polymers.
+delta = 0;
+
+%% set up arrays and derived parameters
+% L is the maximum rate of resource use per unit volume, relative to Ci + Ni +
+% Pi.
 L = lambda/(Ci + Ni + Pi);
 
-delta = 0;
-    
 C_to_N_vector = zeros(res1, 1);
 Recalcitrance = zeros(res1, 1);
 
@@ -68,6 +82,7 @@ xN_fungal = zeros(res1);
 xP_fungal = zeros(res1);
 x_cell = zeros(res1);
 
+%% main program loop
 for i = 1:res1
     
     C_to_N = exp(log(C_to_N_min) + ...

@@ -1,3 +1,4 @@
+%% set up parameters. These can be manually edited.
 % res1 is the number of different values for kappa that we try
 res1 = 200;
 
@@ -14,24 +15,22 @@ sres = 60;
 k_min = 1;
 k_max = 8;
 
-% Ci is the mass of carbon needed per unit volume of growth, in g per ml
+% Ci, Ni and Pi are the mass of carbon, nitrogen and phosphorous, respectively,
+% needed per unit volume of growth, in g per ml.
 Ci = 0.33;
 Ni = 0.032;
 Pi = 0.005;
 
+% C_to_P and N_to_P set the C:P and N:P ratio of the resource, respectively.
 C_to_P = 2000;
 N_to_P = 10;
 
-% tau is the time in hours for hydrolases to digest their own mass
+% tau is the time in hours for hydrolases to digest their own mass and reflects
+% the recalcitrance of the resource.
 tau = 40;
 
 % dry weight in grams per ml of the substrate
 density = 0.5;
-
-M_tot = 12*C_to_P + 14*N_to_P + 31;
-Ce = density*12*C_to_P/M_tot;
-Ne = density*14*N_to_P/M_tot;
-Pe = density*31/M_tot;
 
 % delta is the minimal fraction of C that must be digested in order to 
 % digest the available N
@@ -52,12 +51,19 @@ beta = 0.1;
 % in g per ml per hour
 lambda = 0.3;
 
-% L is the maximum rate of resource use per unit volume,
-% relative to Ci + Ni + Pi
-L = lambda/(Ci + Ni + Pi);
+%% set up arrays and derived parameters
+% calculate the mass in grams per ml from the C:N:P ratios
+M_tot = 12*C_to_P + 14*N_to_P + 31;
+Ce = density*12*C_to_P/M_tot;
+Ne = density*14*N_to_P/M_tot;
+Pe = density*31/M_tot;
 
 % phi is the correction term
 phi = (Ci + Ni)/(Ci + Ni + Pi);
+
+% L is the maximum rate of resource use per unit volume,
+% relative to Ci + Ni + Pi
+L = lambda/(Ci + Ni + Pi);
 
 kappa_vector = zeros(res1, 1);
 
@@ -120,7 +126,7 @@ plot(kappa_vector, Mu_fungal*24, 'm', 'LineWidth', 2)
 plot(kappa_vector, Mu_immobile*24, 'k--', 'LineWidth', 2)
 xlabel('Digestion Range \kappa')
 ylabel('Apparent growth rate, day^{-1}')
-legend('Motile', 'Autolytic', 'Fungi', 'Immobile')
+legend('Motile', 'Autolytic', 'Fungi', 'Immobile','location','best')
 
 
 figure
@@ -131,5 +137,5 @@ plot(kappa_vector, D_fungal*(Ci+Ni+Pi)*24, 'm', 'LineWidth', 2)
 plot(kappa_vector, D_immobile*(Ci+Ni+Pi)*24, 'k--', 'LineWidth', 2)
 xlabel('Digestion Range \kappa')
 ylabel('Digestion Rate, g ml^{-1} day^{-1}')
-legend('Motile', 'Autolytic', 'Fungi', 'Immobile')
+legend('Motile', 'Autolytic', 'Fungi', 'Immobile','location','best')
 

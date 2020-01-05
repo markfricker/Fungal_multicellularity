@@ -5,11 +5,6 @@ autolytic = ones(res1);
 motile = ones(res1);
 fungi = ones(res1);
 
-% if the fastest growing colony has grown by a factor of
-% of n, and a slower growing colony has grown by a factor 
-% of m, the channels for the colonies are coloured according 
-% with intensity 1 and m/n respectively. Higher n increases the
-% apparent diffence in colour, making a lighter CYM merge.
 n = 1000;
 
 for i = 1:res1

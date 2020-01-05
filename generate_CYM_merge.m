@@ -58,4 +58,4 @@ xlabel('log_{10}(Recalcitrance), hours')
 ylabel('log_{10}(C:N ratio)')
 title('Fungi vs Mobile vs Degradable', 'Fontsize', 14)
 axis square
-axis off
+axis on

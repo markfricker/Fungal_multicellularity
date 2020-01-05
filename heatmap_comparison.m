@@ -3,7 +3,8 @@ mu2 = Mu_autolytic;
 
 % max_ratio is the ratio between growth rate results in a colour that is
 % indistinguishable from the colour given when the ratio between growth
-% rates is infinite 
+% rates is infinite
+
 max_ratio = 2;
 
 colour_growth_ratio = zeros(res1, res1, 3);
