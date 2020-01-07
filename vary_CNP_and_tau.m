@@ -7,7 +7,7 @@ res1 = 200;
 % the optimal solution. Final value found is accurate to xres^2.
 xres = 200;
 
-% res is the number of iterations used in finding best solution for a given
+% sres is the number of iterations used in finding best solution for a given
 % environment and a given rate of sythesis.
 sres = 60;
 
@@ -20,19 +20,21 @@ kappa = 6;
 
 % C_to_N_min and C_to_N_max define the limits of the C:N ratio in the resource.
 % The number of intermediate steps is controlled by res1. The C:N ratio is
-% plotted on the y-axis of the resultnt map.
+% plotted on the y-axis of the resultant map.
 C_to_N_min = 8;
 C_to_N_max = 300;
 
 % tau_min and tau_max define the limits of the resouce recalcitrance, where tau
 % is the time in hours for hydrolases to digest their own mass . the number of
 % intermediate steps is controlled by res1. The recalcitrance is plotted on the
-% x-axis of the resultnt map.
+% x-axis of the resultant map.
 tau_min = 0.1;
 tau_max = 100;
 
 % Ci, Ni and Pi are the mass of carbon, nitrogen and phosphorous, respectively,
-% needed per unit volume of growth, in g per ml.
+% needed per unit volume of growth, in g per ml. Ci includes the internal C, 
+% and the C required for respiration, with the ratio set by the Carbon Use 
+% Efficiency (CUE).
 Ci = 0.33;
 Ni = 0.032;
 Pi = 0.005;
