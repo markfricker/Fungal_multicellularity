@@ -21,7 +21,7 @@ kappa = 6;
 % C_to_N_min and C_to_N_max define the limits of the C:N ratio in the resource.
 % The number of intermediate steps is controlled by res1. The C:N ratio is
 % plotted on the y-axis of the resultant map.
-C_to_N_min = 8;
+C_to_N_min = 5;
 C_to_N_max = 300;
 
 % tau_min and tau_max define the limits of the resouce recalcitrance, where tau
