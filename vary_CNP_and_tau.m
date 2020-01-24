@@ -14,7 +14,7 @@ sres = 60;
 % N_to_P set the N:P ratio of the resource.
 N_to_P = 20;
 
-% kappa is the radius of digestion, normalised to the radous of the cells/hypha,
+% kappa is the radius of digestion, normalised to the radius of the cells/hypha,
 % and sets the total amount of resource available.
 kappa = 6;
 
@@ -24,20 +24,26 @@ kappa = 6;
 C_to_N_min = 5;
 C_to_N_max = 300;
 
-% tau_min and tau_max define the limits of the resouce recalcitrance, where tau
-% is the time in hours for hydrolases to digest their own mass . the number of
+% tau_min and tau_max define the limits of the resource recalcitrance, where tau
+% is the time in hours for hydrolases to digest their own mass. The number of
 % intermediate steps is controlled by res1. The recalcitrance is plotted on the
 % x-axis of the resultant map.
 tau_min = 0.1;
 tau_max = 100;
 
 % Ci, Ni and Pi are the mass of carbon, nitrogen and phosphorous, respectively,
-% needed per unit volume of growth, in g per ml. Ci includes the internal C, 
-% and the C required for respiration, with the ratio set by the Carbon Use 
-% Efficiency (CUE).
-Ci = 0.33;
+% needed per unit volume of growth, in g per ml. 
+Ci = 0.165;
 Ni = 0.032;
 Pi = 0.005;
+
+% the carbon use efficiency is the fraction of C for growth versus total C
+% for respiration and growth
+CUE = 0.5;
+
+% Ct is the total C required, including respiratory C set by the carbon use
+% efficiency
+Ct = Ci/CUE;
 
 % dry weight in grams per ml of the substrate.
 density = 0.5;
@@ -62,9 +68,9 @@ lambda = 0.3;
 delta = 0;
 
 %% set up arrays and derived parameters
-% L is the maximum rate of resource use per unit volume, relative to Ci + Ni +
+% L is the maximum rate of resource use per unit volume, relative to Ct + Ni +
 % Pi.
-L = lambda/(Ci + Ni + Pi);
+L = lambda/(Ct + Ni + Pi);
 
 C_to_N_vector = zeros(res1, 1);
 Recalcitrance = zeros(res1, 1);
@@ -105,22 +111,22 @@ for i = 1:res1
         
         Recalcitrance(j) = tau;
         
-        [Mu_cell(i,j), x_cell(i,j)] = find_best_cell(Ci, Ni, Pi, Ce, Ne, tau, delta, L);
+        [Mu_cell(i,j), x_cell(i,j)] = find_best_cell(Ct, Ni, Pi, Ce, Ne, tau, delta, L);
         
         [Mu_immobile(i,j), Mu_immobile(i,j)] = find_best_immobile...
-            (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, sres, xres);
+            (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, sres, xres);
         
         
         [Mu_motile(i,j), x_motile(i,j)] = find_best_motile...
-            (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, ...
+            (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, ...
             L, alpha, sres, xres);
         
         [Mu_autolytic(i,j), ~, x_autolytic(i,j)] = find_best_autolytic...
-            (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, ...
+            (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, ...
             L, epsilon, sres, xres);
         
         [Mu_fungal(i,j), x_fungal(i,j), x_fungal(i,j), ...
-            xN_fungal(i,j), xP_fungal(i,j)] = find_best_fungi(Ci, Ni, ...
+            xN_fungal(i,j), xP_fungal(i,j)] = find_best_fungi(Ct, Ni, ...
             Pi, Ce, Ne, Pe, kappa, tau, delta, L, beta, sres, 3*xres);
         
     end

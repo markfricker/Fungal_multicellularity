@@ -1,5 +1,5 @@
 function [mu, x, xC, xN, xP] = find_best_fungi...
-    (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, beta, sres, xres)
+    (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, beta, sres, xres)
 
 % sres is the number of iterative refinements of a solution
 % that we run through for each value of x, and xres is the 
@@ -7,7 +7,7 @@ function [mu, x, xC, xN, xP] = find_best_fungi...
 
 % CC is the mass of carbon needed per unit volume of cell, given that
 % maximal bias in the uptake of N instead of C
-CC = max([Ci, Ni*Ce*delta/Ne]);
+CC = max([Ct, Ni*Ce*delta/Ne]);
     
 % hydrolases density cannot be so high that there is not enough local
 % resource to synthesise them, which limits maximal rate of resource use,
@@ -33,7 +33,7 @@ else
     U = U_vector(1);
     
     [mu_vector(1), xC_vector(1), xN_vector(1), xP_vector(1)] = ...
-        find_mu_given_U_fungi(U, 0, 0, 0, 0, Ci, Ni, Pi, ...
+        find_mu_given_U_fungi(U, 0, 0, 0, 0, Ct, Ni, Pi, ...
             Ce, Ne, Pe, kappa, tau, delta, beta, xres);
 
     for i = 2:xres
@@ -45,7 +45,7 @@ else
         U = U_vector(i-1);
         
         [mu_vector(i), xC_vector(i), xN_vector(i), xP_vector(i)] = ...
-            find_mu_given_U_fungi(U, mu1, xC1, xN1, xP1, Ci, Ni, Pi, ...
+            find_mu_given_U_fungi(U, mu1, xC1, xN1, xP1, Ct, Ni, Pi, ...
                 Ce, Ne, Pe, kappa, tau, delta, beta, xres);
     end
     
@@ -79,7 +79,7 @@ else
         
         [mu_vector(i), xC_vector(i),  xN_vector(i),  xP_vector(i)] = ...
             find_mu_given_U_fungi(U_vector(i), mu1, xC1, xN1, xP1,...
-            Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, beta, sres);
+            Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, beta, sres);
         
         mu1 = mu_vector(i);
         xC1 = xC_vector(i);

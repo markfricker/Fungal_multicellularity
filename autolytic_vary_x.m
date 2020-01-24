@@ -24,9 +24,17 @@ tau = 20;
 delta = 0;
 
 % Ci is the mass of carbon needed per unit volume of growth, in g per ml
-Ci = 0.33;
+Ci = 0.165;
 Ni = 0.032;
 Pi = 0.005;
+
+% the carbon use efficiency is the fraction of C for growth versus total C
+% for respiration and growth
+CUE = 0.5;
+
+% Ct is the total C required, including respiratory C set by the carbon use
+% efficiency
+Ct = Ci/CUE;
 
 % epsilon is the efficiency of recycling for autolytic cells
 epsilon = 0.5;
@@ -44,8 +52,8 @@ beta = 0.1;
 lambda = 0.3;
 
 % L is the maximum rate of resource use per unit volume,
-% relative to Ci + Ni + Pi
-L = lambda/(Ci + Ni + Pi);
+% relative to Ct + Ni + Pi
+L = lambda/(Ct + Ni + Pi);
 
 M_tot = 12*C_to_P + 14*N_to_P + 31;
 Ce = density*12*C_to_P/M_tot;
@@ -53,15 +61,15 @@ Ne = density*14*N_to_P/M_tot;
 Pe = density*31/M_tot;
 
 % phi is the correction term
-phi = (Ci + Ni)/(Ci + Ni + Pi);
+phi = (Ct + Ni)/(Ct + Ni + Pi);
 
 % CC is the mass of carbon needed per unit volume of cell, given that
 % maximal bias in the uptake of N instead of C
-CC = max([Ci, Ni*Ce*delta/Ne]);
+CC = max([Ct, Ni*Ce*delta/Ne]);
     
 % theta is the fraction of digested resource that is strictly  
 % necessary for growth, when everything is used for hydrolases
-theta = (Ni + Ci)/(Ni + CC);
+theta = (Ni + Ct)/(Ni + CC);
  
 x_max = min([L*tau/(phi*theta), ...
     -1+(kappa^2)*Ce/CC, -1+(kappa^2)*Ne/Ni]);
@@ -75,7 +83,7 @@ for i = 1:xres
     
     % theta is the fraction of digested resource that is strictly  
     % necessary for growth
-    theta = (Pi + (Ni + Ci)*(1 + x))/(Pi + (Ni + CC)*(1 + x));
+    theta = (Pi + (Ni + Ct)*(1 + x))/(Pi + (Ni + CC)*(1 + x));
     
     % omega is the number of duplicates that can be made of the cell and
     % its hydrolases, given the local supply of nutrients
@@ -105,7 +113,7 @@ for i = 1:xres
 end
 
 [mu, eta, x] = find_best_autolytic...
-    (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, epsilon, sres, xres);
+    (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, epsilon, sres, xres);
 
 figure(1)
 plot(x_vector, M_vector)

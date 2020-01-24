@@ -1,20 +1,20 @@
 function [mu, x] = find_best_immobile...
-    (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, sres, xres)
+    (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, sres, xres)
 
 % sres is the number of iterative refinements of a solution
 % that we run through for each value of x, and xres is the 
 % number of different values for x that we try
 
 % phi is the correction term
-phi = (Ci + Ni)/(Ci + Ni + Pi);
+phi = (Ct + Ni)/(Ct + Ni + Pi);
 
 % CC is the mass of carbon needed per unit volume of cell, given that
 % maximal bias in the uptake of N instead of C
-CC = max([Ci, Ni*Ce*delta/Ne]);
+CC = max([Ct, Ni*Ce*delta/Ne]);
     
 % theta is the fraction of digested resource that is strictly  
 % necessary for growth, when everything is used for hydrolases
-theta = (Ni + Ci)/(Ni + CC);
+theta = (Ni + Ct)/(Ni + CC);
     
 % hydrolases density cannot be so high that there is not enough local
 % resource to synthesise them. Also, the optimal density of hydrolases 
@@ -35,7 +35,7 @@ else
     x = x_vector(1);
     
     mu_vector(1) = find_mu_given_x_immobile...
-        (x, 0, Ci,Ni,Pi, Ce,Ne,Pe, kappa, tau, L, delta, sres);
+        (x, 0, Ct,Ni,Pi, Ce,Ne,Pe, kappa, tau, L, delta, sres);
 
     for i = 2:xres
         
@@ -43,7 +43,7 @@ else
         mu1 = mu_vector(i-1);
         
         mu_vector(i) = find_mu_given_x_immobile...
-            (x, mu1, Ci,Ni,Pi, Ce,Ne,Pe, kappa, tau, L, delta, sres);
+            (x, mu1, Ct,Ni,Pi, Ce,Ne,Pe, kappa, tau, L, delta, sres);
     end
     
     k = find(mu_vector == max(mu_vector), 1);
@@ -66,7 +66,7 @@ else
     for i = 1:xres
         
         mu_vector(i) = find_mu_given_x_immobile...
-            (x_vector(i), mu1, Ci, Ni, Pi, Ce, Ne, Pe, ...
+            (x_vector(i), mu1, Ct, Ni, Pi, Ce, Ne, Pe, ...
             kappa, tau, L, delta, sres);
         
         mu1 = mu_vector(i);

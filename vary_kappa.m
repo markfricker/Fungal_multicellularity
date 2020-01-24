@@ -2,8 +2,8 @@
 % res1 is the number of different values for kappa that we try
 res1 = 200;
 
-% xres is the number of iterations used in finding best solution for 
-% a given environment and a given rate of sythesis
+% xres determines the number of different values for x that are tried in finding
+% the optimal solution. Final value found is accurate to xres^2.
 xres = 200;
 
 % sres is the number of iterations used in finding best solution for 
@@ -11,15 +11,22 @@ xres = 200;
 sres = 60;
 
 % k_min and k_max are the minimum and maximum values for the resource
-% acquisition length that we try
+% acquisition lradius that we try
 k_min = 1;
 k_max = 8;
 
-% Ci, Ni and Pi are the mass of carbon, nitrogen and phosphorous, respectively,
-% needed per unit volume of growth, in g per ml.
-Ci = 0.33;
+% Ci is the mass of carbon needed per unit volume of growth, in g per ml
+Ci = 0.165;
 Ni = 0.032;
 Pi = 0.005;
+
+% the carbon use efficiency is the fraction of C for growth versus total C
+% for respiration and growth
+CUE = 0.5;
+
+% Ct is the total C required, including respiratory C set by the carbon use
+% efficiency
+Ct = Ci/CUE;
 
 % C_to_P and N_to_P set the C:P and N:P ratio of the resource, respectively.
 C_to_P = 2000;
@@ -59,11 +66,11 @@ Ne = density*14*N_to_P/M_tot;
 Pe = density*31/M_tot;
 
 % phi is the correction term
-phi = (Ci + Ni)/(Ci + Ni + Pi);
+phi = (Ct + Ni)/(Ct + Ni + Pi);
 
 % L is the maximum rate of resource use per unit volume,
-% relative to Ci + Ni + Pi
-L = lambda/(Ci + Ni + Pi);
+% relative to Ct + Ni + Pi
+L = lambda/(Ct + Ni + Pi);
 
 kappa_vector = zeros(res1, 1);
 
@@ -88,25 +95,25 @@ for i = 1:res1
     kappa_vector(i) = kappa;
     
     [M, x] = find_best_immobile...
-    (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, sres, xres);
+    (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, sres, xres);
      
     Mu_immobile(i) = M;
     D_immobile(i) = phi*x/tau;
     
-    [M, x] = find_best_motile(Ci, Ni, Pi, Ce, Ne, Pe, ...
+    [M, x] = find_best_motile(Ct, Ni, Pi, Ce, Ne, Pe, ...
         kappa, tau, delta, L, alpha, sres, xres);
     
     Mu_motile(i) = M;
     D_motile(i) = phi*x/tau;
     
-    [M, ~, x] = find_best_autolytic(Ci, Ni, Pi, Ce, Ne, Pe, ...
+    [M, ~, x] = find_best_autolytic(Ct, Ni, Pi, Ce, Ne, Pe, ...
         kappa, tau, delta, L, epsilon, sres, xres);
 
     Mu_autolytic(i) = M;
     D_autolytic(i) = phi*x/tau;
     
     [M, x, xC, xN, xP] = find_best_fungi...
-        (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta,L,beta,sres,3*xres);
+        (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta,L,beta,sres,3*xres);
     
     Mu_fungal(i) = M;
     DC_fungal(i) = phi*xC/tau;
@@ -130,11 +137,11 @@ legend('Motile', 'Autolytic', 'Fungi', 'Immobile','location','best')
 
 
 figure
-plot(kappa_vector, D_motile*(Ci+Ni+Pi)*24, 'c', 'LineWidth', 2)
+plot(kappa_vector, D_motile*(Ct+Ni+Pi)*24, 'c', 'LineWidth', 2)
 hold on
-plot(kappa_vector, D_autolytic*(Ci+Ni+Pi)*24, 'g', 'LineWidth', 2)
-plot(kappa_vector, D_fungal*(Ci+Ni+Pi)*24, 'm', 'LineWidth', 2)
-plot(kappa_vector, D_immobile*(Ci+Ni+Pi)*24, 'k--', 'LineWidth', 2)
+plot(kappa_vector, D_autolytic*(Ct+Ni+Pi)*24, 'g', 'LineWidth', 2)
+plot(kappa_vector, D_fungal*(Ct+Ni+Pi)*24, 'm', 'LineWidth', 2)
+plot(kappa_vector, D_immobile*(Ct+Ni+Pi)*24, 'k--', 'LineWidth', 2)
 xlabel('Digestion Range \kappa')
 ylabel('Digestion Rate, g ml^{-1} day^{-1}')
 legend('Motile', 'Autolytic', 'Fungi', 'Immobile','location','best')

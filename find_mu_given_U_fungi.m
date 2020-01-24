@@ -1,5 +1,5 @@
 function [mu, xC, xN, xP] = find_mu_given_U_fungi...
-    (U, mu1, xC1, xN1, xP1, Ci, Ni, Pi, Ce, Ne, Pe, ...
+    (U, mu1, xC1, xN1, xP1, Ct, Ni, Pi, Ce, Ne, Pe, ...
     kappa, tau, delta, beta, res)
 
 % mu1 is the initial guess for the apparent growth rate of the colony
@@ -7,11 +7,11 @@ function [mu, xC, xN, xP] = find_mu_given_U_fungi...
 % exoenzymes, and likewise for xN1 and xP1
 
 % phi is the correction term
-phi = (Ci + Ni)/(Ci + Ni + Pi);
+phi = (Ct + Ni)/(Ct + Ni + Pi);
 
 % CC is the mass of carbon needed per unit volume of cell, given that
 % maximal bias in the uptake of N instead of C
-CC = max([Ci, Ni*Ce*delta/Ne]);
+CC = max([Ct, Ni*Ce*delta/Ne]);
 
 if xC1 == 0
     
@@ -45,21 +45,21 @@ end
 for dum = 1:res
     
     % fC is the mass fraction of required resource that is C
-    fC = Ci*(1 + x)*(1 + beta)/...
-        (Pi + (Ci + Ni)*(1 + x)*(1 + beta));
+    fC = Ct*(1 + x)*(1 + beta)/...
+        (Pi + (Ct + Ni)*(1 + x)*(1 + beta));
     
     % fN is the mass fraction of required resource that is N
     fN = Ni*(1 + x)*(1 + beta)/...
-        (Pi + (Ci + Ni)*(1 + x)*(1 + beta));
+        (Pi + (Ct + Ni)*(1 + x)*(1 + beta));
     
     % fP is the mass fraction of required resource that is P
-    fP = Pi/(Pi + (Ci + Ni)*(1 + x)*(1 + beta));
+    fP = Pi/(Pi + (Ct + Ni)*(1 + x)*(1 + beta));
     
     % tC is the time taken to exhaust the local supply of C,
     % and likewise for tN and tP
-    tC = (kappa^2)*Ce*tau/(xC*(Ci + Ni + Pi));
-    tN = (kappa^2)*Ne*tau/(xN*(Ci + Ni + Pi));
-    tP = (kappa^2)*Pe*tau/(xP*(Ci + Ni + Pi));
+    tC = (kappa^2)*Ce*tau/(xC*(Ct + Ni + Pi));
+    tN = (kappa^2)*Ne*tau/(xN*(Ct + Ni + Pi));
+    tP = (kappa^2)*Pe*tau/(xP*(Ct + Ni + Pi));
     
     % xP is the relative density of P digesting exoenzymes
     xP = fP*U*tau/(1 - exp(-mu*tP));

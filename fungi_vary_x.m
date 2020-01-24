@@ -24,9 +24,17 @@ tau = 20;
 delta = 0;
 
 % Ci is the mass of carbon needed per unit volume of growth, in g per ml
-Ci = 0.33;
+Ci = 0.165;
 Ni = 0.032;
 Pi = 0.005;
+
+% the carbon use efficiency is the fraction of C for growth versus total C
+% for respiration and growth
+CUE = 0.5;
+
+% Ct is the total C required, including respiratory C set by the carbon use
+% efficiency
+Ct = Ci/CUE;
 
 % epsilon is the efficiency of recycling for autolytic cells
 epsilon = 0.5;
@@ -44,8 +52,8 @@ beta = 0.1;
 lambda = 0.3;
 
 % L is the maximum rate of resource use per unit volume,
-% relative to Ci + Ni + Pi
-L = lambda/(Ci + Ni + Pi);
+% relative to Ct + Ni + Pi
+L = lambda/(Ct + Ni + Pi);
 
 M_tot = 12*C_to_P + 14*N_to_P + 31;
 Ce = density*12*C_to_P/M_tot;
@@ -53,11 +61,11 @@ Ne = density*14*N_to_P/M_tot;
 Pe = density*31/M_tot;
 
 % phi is the correction term
-phi = (Ci + Ni)/(Ci + Ni + Pi);
+phi = (Ct + Ni)/(Ct + Ni + Pi);
 
 % CC is the mass of carbon needed per unit volume of cell, given that
 % maximal bias in the uptake of N instead of C
-CC = max([Ci, Ni*Ce*delta/Ne]);
+CC = max([Ct, Ni*Ce*delta/Ne]);
     
 % hydrolases density cannot be so high that there is not enough local
 % resource to synthesise them, which limits maximal rate of resource use,
@@ -80,9 +88,9 @@ for i = 1:xres
     
     % xC is our initial guess for the relative density of exoenzymes, 
     % given the rate of synthesis S. Likewise for xN and xP
-    xC = U*tau*CC/(Ci + Ni + Pi);
-    xN = U*tau*Ni/(Ci + Ni + Pi);
-    xP = U*tau*Pi/(Ci + Ni + Pi);
+    xC = U*tau*CC/(Ct + Ni + Pi);
+    xN = U*tau*Ni/(Ct + Ni + Pi);
+    xP = U*tau*Pi/(Ct + Ni + Pi);
     
     x = xC + xN + xP;
     
@@ -92,21 +100,21 @@ for i = 1:xres
     for dum = 1:sres
         
         % fC is the mass fraction of required resource that is C
-        fC = Ci*(1 + x)*(1 + beta)/...
-            (Pi + (Ci + Ni)*(1 + x)*(1 + beta));
+        fC = Ct*(1 + x)*(1 + beta)/...
+            (Pi + (Ct + Ni)*(1 + x)*(1 + beta));
         
         % fN is the mass fraction of required resource that is N
         fN = Ni*(1 + x)*(1 + beta)/...
-            (Pi + (Ci + Ni)*(1 + x)*(1 + beta));
+            (Pi + (Ct + Ni)*(1 + x)*(1 + beta));
         
         % fP is the mass fraction of required resource that is P
-        fP = Pi/(Pi + (Ci + Ni)*(1 + x)*(1 + beta));
+        fP = Pi/(Pi + (Ct + Ni)*(1 + x)*(1 + beta));
         
         % tC is the time taken to exhaust the local supply of C,
         % and likewise for tN and tP
-        tC = (kappa^2)*Ce*tau/(xC*(Ci + Ni + Pi));
-        tN = (kappa^2)*Ne*tau/(xN*(Ci + Ni + Pi));
-        tP = (kappa^2)*Pe*tau/(xP*(Ci + Ni + Pi));
+        tC = (kappa^2)*Ce*tau/(xC*(Ct + Ni + Pi));
+        tN = (kappa^2)*Ne*tau/(xN*(Ct + Ni + Pi));
+        tP = (kappa^2)*Pe*tau/(xP*(Ct + Ni + Pi));
     
         % xP is the relative density of P digesting exoenzymes
         xP = fP*U*tau/(1 - exp(-mu*tP));
@@ -138,7 +146,7 @@ for i = 1:xres
 end
 
 [M, x, xC, xN, xP] = find_best_fungi...
-     (Ci, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, beta, sres, xres);
+     (Ct, Ni, Pi, Ce, Ne, Pe, kappa, tau, delta, L, beta, sres, xres);
 
 figure(1)
 plot(x_vector, M_vector)
